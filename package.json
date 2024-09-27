@@ -1,0 +1,32 @@
+{
+  "name": "survival-game",
+  "version": "1.0.0",
+  "description": "i don't know, really",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "npx tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cxncxl/another-survival-game.git"
+  },
+  "keywords": [
+    "having",
+    "fun"
+  ],
+  "author": "trio of fools",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cxncxl/another-survival-game/issues"
+  },
+  "homepage": "https://github.com/cxncxl/another-survival-game#readme",
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.6.2"
+  },
+  "dependencies": {
+    "phaser": "^3.85.2"
+  }
+}
