@@ -27,6 +27,7 @@
     "typescript": "^5.6.2"
   },
   "dependencies": {
-    "phaser": "^3.85.2"
+    "phaser": "^3.85.2",
+    "rxjs": "^7.8.1"
   }
 }
