@@ -13,6 +13,12 @@ export class World {
     public camera!: Camera;
 
     private constructor() {
+    }
+
+    public setScene(scene: Scene): void {
+        if (this.scene) throw new Error("Scene already set for the world");
+
+        this.scene = scene;
         this.camera = new Camera(this.scene.cameras.main);
     }
 

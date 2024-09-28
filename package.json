@@ -2,10 +2,11 @@
   "name": "survival-game",
   "version": "1.0.0",
   "description": "i don't know, really",
-  "main": "index.js",
+  "private": true,
   "scripts": {
     "test": "jest",
-    "build": "npx tsc"
+    "build": "npx webpack",
+    "postbuild": "cp src/index.html dist/index.html && cp src/styles.css dist/styles.css"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,10 @@
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.6.2"
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.6.2",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
     "phaser": "^3.85.2",

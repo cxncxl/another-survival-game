@@ -1,12 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "ES2020",
     "module": "commonjs",
+    "lib": ["es5", "es6", "dom"],
+    "sourceMap": true,
+    "allowJs": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "rootDir": "./src",
     "outDir": "./dist",
   },
-  "exclude": ["node_modules", "jest.config.ts"]
+  "exclude": ["node_modules", "jest.config.ts", "dist", "webpack.config.js"]
 }

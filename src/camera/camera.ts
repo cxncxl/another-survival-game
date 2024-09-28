@@ -1,11 +1,12 @@
 import { GameObject } from "../basics/game-object";
+import { CONFIG } from "../config";
 import { Vector2 } from "../math/vector2";
 
 /**
  * Game Object-like wrapper for Phaser's Camera
  */
 export class Camera extends GameObject {
-    public static viewPortSize = new Vector2(800, 600);
+    public static viewPortSize = new Vector2(CONFIG.GAME_WINDOW.WIDTH, CONFIG.GAME_WINDOW.HEIGHT);
 
     private _camera: Phaser.Cameras.Scene2D.Camera;
 
@@ -13,10 +14,11 @@ export class Camera extends GameObject {
         return this._camera;
     }
 
-    constructor(camera: Phaser.Cameras.Scene2D.Camera) {
+    constructor(phaserCamera: Phaser.Cameras.Scene2D.Camera) {
         super();
 
-        this._camera = camera;
+        this._camera = phaserCamera;
+        this.camera.setViewport(0, 0, Camera.viewPortSize.x, Camera.viewPortSize.y);
     }
 
     public onReady(): void {}

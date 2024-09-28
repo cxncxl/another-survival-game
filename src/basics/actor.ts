@@ -8,6 +8,8 @@ import { Subscription } from "rxjs";
  * Everything that can be drawn on the screen is an actor.
  */
 export abstract class Actor extends GameObject {
+    public sprite: any; // TODO
+
     constructor() {
         super();
 
