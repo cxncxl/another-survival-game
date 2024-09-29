@@ -4,6 +4,8 @@ import { Vector2 } from "../math/vector2";
 
 /**
  * Game Object-like wrapper for Phaser's Camera
+ * 
+ * @deprecated
  */
 export class Camera extends GameObject {
     public static viewPortSize = new Vector2(CONFIG.GAME_WINDOW.WIDTH, CONFIG.GAME_WINDOW.HEIGHT);

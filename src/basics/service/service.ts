@@ -1,3 +1,5 @@
+import { from, Observable } from "rxjs";
+
 export class Service {
     protected token: string;
 
@@ -9,11 +11,15 @@ export class Service {
         this.token = token;
     }
 
-    protected async fetch(url: string, options: RequestInit = {}): Promise<Response> {
+    protected fetch<T>(url: string, options: RequestInit = {}): Observable<T> {
         const headers = new Headers(options.headers);
 
         headers.set('Authorization', `Bearer ${this.token}`);
 
-        return fetch(url, { ...options, headers });
+        return from(
+            (async () => {
+                return await (await fetch(url, { ...options, headers })).json()
+            })()
+        );
     }
 }

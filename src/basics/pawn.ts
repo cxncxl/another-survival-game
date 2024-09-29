@@ -10,14 +10,15 @@ import { GameObject } from "./game-object";
 export class Pawn extends Actor {
     protected controller: Controller;
 
-    constructor(controller: Controller) {
-        super();
+    constructor(spriteLabel: string, controller: Controller) {
+        super(spriteLabel);
 
         this.controller = controller;
 
         this.onReady();
     }
 
+    override onRendered() {}
     override onReady() {}
     override onUpdate() {}
 }

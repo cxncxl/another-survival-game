@@ -5,8 +5,10 @@
   "private": true,
   "scripts": {
     "test": "jest",
+    "prebuild": "rm -rf dist",  
     "build": "npx webpack",
-    "postbuild": "cp src/index.html dist/index.html && cp src/styles.css dist/styles.css"
+    "build:prod": "npx webpack --mode production",
+    "postbuild": "cp src/index.html dist/index.html && cp src/styles.css dist/styles.css && cp -r assets dist/assets"
   },
   "repository": {
     "type": "git",

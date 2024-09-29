@@ -1,6 +1,7 @@
-import { Scene } from "phaser";
-import { Camera } from "../camera/camera";
-import { GameObject } from "../basics/game-object";
+import { Scene } from "../scene/scene";
+// import { Camera } from "../camera/camera";
+import { CraftWindow } from "../craft-window/craft.actor";
+import { Actor } from "../basics/actor";
 
 /**
  * World class
@@ -11,7 +12,7 @@ export class World {
     static instance: World;
 
     public scene!: Scene;
-    public camera!: Camera;
+    public camera!: Phaser.Cameras.Scene2D.Camera;
 
     private constructor() {
     }
@@ -20,7 +21,9 @@ export class World {
         if (this.scene) throw new Error("Scene already set for the world");
 
         this.scene = scene;
-        this.camera = new Camera(this.scene.cameras.main);
+        this.camera = this.scene.cameras.main;
+
+        this.initiate();
     }
 
     public static getInstance(): World {
@@ -31,7 +34,11 @@ export class World {
         return World.instance;
     }
 
-    public registerDrawable(gameObject: GameObject): void {
-        // ...
+    public registerDrawable(drawable: Actor): void {
+        drawable.render();
+    }
+
+    private initiate() {
+        const craft = new CraftWindow();
     }
 }

@@ -6,7 +6,7 @@ import { PlayerController } from "./player.controller";
  */
 export class Player extends Pawn {
     public socketId?: string;
-    public name?: string;
+    public nickname?: string;
 
     public characteristics?: {
         health: number;
@@ -17,7 +17,7 @@ export class Player extends Pawn {
     };
 
     constructor() {
-        super(PlayerController.getInstance());
+        super('player', PlayerController.getInstance());
 
         // this.socket = ... connect to socket
         // this.name, this.characteristics = ... pull user data from API

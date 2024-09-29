@@ -1,4 +1,5 @@
 import { Subject } from "rxjs";
+import * as Phaser from "phaser";
 
 import { Vector2 } from "../math/vector2";
 import { World } from "../world/world";
@@ -23,6 +24,17 @@ export abstract class GameObject extends Phaser.GameObjects.GameObject {
     }
 
     public transform$: Subject<Transform> = new Subject<Transform>();
+
+    protected world: World;
+
+    constructor() {
+        super(
+            World.getInstance().scene,
+            'custom'
+        );
+
+        this.world = World.getInstance();
+    }
 
     setTransform(location: Vector2, rotation: number, scale: Vector2): void {
         this._transform.location = location;
@@ -50,23 +62,18 @@ export abstract class GameObject extends Phaser.GameObjects.GameObject {
         this.transform$.next(this._transform);
     }
 
-    protected world!: World;
-
-    constructor() {
-        super(
-            World.getInstance().scene,
-            'custom'
-        );
-
-        this.world = World.getInstance();
-    }
-
     public instantiate(): void {
     }
 
     public destroy(): void {
         // Remove from game
     }
+
+    update() {
+        this.onUpdate();
+    }
+
+
 }
 
 type Transform = {

@@ -33,6 +33,10 @@ export class Vector2 {
         return new Vector2(this._x / scalar, this._y / scalar);
     }
 
+    public divideByVector(vector: Vector2): Vector2 {
+        return new Vector2(this._x / vector.x, this._y / vector.y);
+    }
+
     public magnitude(): number {
         return Math.sqrt(this._x * this._x + this._y * this._y);
     }
