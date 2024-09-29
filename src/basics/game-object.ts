@@ -1,4 +1,5 @@
-import { Observable, of, Subject } from "rxjs";
+import { Subject } from "rxjs";
+
 import { Vector2 } from "../math/vector2";
 import { World } from "../world/world";
 
@@ -7,7 +8,7 @@ import { World } from "../world/world";
  * 
  * Everything that exists in the game is a game object.
  */
-export abstract class GameObject {    
+export abstract class GameObject extends Phaser.GameObjects.GameObject {    
     public abstract onReady(): void;
     public abstract onUpdate(): void;
 
@@ -52,6 +53,11 @@ export abstract class GameObject {
     protected world!: World;
 
     constructor() {
+        super(
+            World.getInstance().scene,
+            'custom'
+        );
+
         this.world = World.getInstance();
     }
 

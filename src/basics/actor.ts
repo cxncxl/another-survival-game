@@ -8,10 +8,13 @@ import { Subscription } from "rxjs";
  * Everything that can be drawn on the screen is an actor.
  */
 export abstract class Actor extends GameObject {
-    public sprite: any; // TODO
+    public sprite?: Phaser.GameObjects.Sprite;
+    protected rendered: boolean = false;
 
     constructor() {
         super();
+
+        this.world.registerDrawable(this);
 
         // when the camera moves, we need to re-render the actor or remove it from rendering
         this.world.camera.transform$.subscribe((transform) => {
@@ -20,11 +23,13 @@ export abstract class Actor extends GameObject {
     }
 
     public render(): void {
-        if (this.inViewport) {
-            // do render
+        if (this.inViewport && !this.rendered && this.sprite) {
+            this.world.scene.add.existing(this.sprite);
+            this.rendered = true;
         }
-        else {
-            // remove from render
+
+        if (!this.inViewport && this.rendered) {
+            // this.sprite.();
         }
     }
 

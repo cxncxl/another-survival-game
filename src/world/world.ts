@@ -1,5 +1,6 @@
 import { Scene } from "phaser";
 import { Camera } from "../camera/camera";
+import { GameObject } from "../basics/game-object";
 
 /**
  * World class
@@ -28,5 +29,9 @@ export class World {
         }
 
         return World.instance;
+    }
+
+    public registerDrawable(gameObject: GameObject): void {
+        // ...
     }
 }
