@@ -103,3 +103,9 @@ export abstract class Actor extends GameObject {
 
     public abstract onRendered(): void;
 }
+
+export class EmtpyActor extends Actor {
+    public onReady(): void {}
+    public onUpdate(): void {}
+    public onRendered(): void {}
+}

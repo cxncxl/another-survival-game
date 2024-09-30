@@ -1,10 +1,12 @@
-import { map } from "rxjs";
+import { map, of } from "rxjs";
 import { Service } from "../basics/service/service";
 import { environment } from "../env/environment";
+import { Item, CraftInput } from "./model/craft.model";
 
 export class CraftService extends Service {
     getAllItems() {
-        return this.fetch<Item[]>(`${environment.API_URL}/items_list`).pipe(
+        return this.fetch<Item[]>(`${environment.API_URL}/items_list`)
+        .pipe(
             map((items) => 
                 items.map((item) => ({ 
                     ...item, 
@@ -35,15 +37,4 @@ export class CraftService extends Service {
             },
         });
     }
-}
-
-type CraftInput = {
-    items: { id: number, amount: number }[];
-    description: string;
-}
-
-type Item = {
-    image: string;
-    name: string;
-    id: number;
 }
