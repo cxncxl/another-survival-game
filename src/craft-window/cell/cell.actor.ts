@@ -5,7 +5,7 @@ export class InventoryCell extends Actor {
     public item?: Item;
 
     constructor() {
-        super('assets/ui/inventory-cell.png');
+        super('gamebuild/assets/ui/inventory-cell.png');
     }
 
     public setItem(item: Item): void {

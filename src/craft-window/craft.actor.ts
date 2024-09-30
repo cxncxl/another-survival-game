@@ -22,7 +22,7 @@ export class CraftWindow extends Actor {
     scaleFactor = new Vector2(1, 1);
 
     constructor() {
-        super('assets/ui/craft-window.png');
+        super('gamebuild/assets/ui/craft-window.png');
         
         this.service = new CraftService();
 
