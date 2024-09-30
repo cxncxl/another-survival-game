@@ -85,6 +85,23 @@ export class CraftWindow extends Actor {
                 }
             }
         })).subscribe(() => {
+            // sort cells by location (1st is top left, last is bottom right)
+            this.cells = [...this.cells.sort((a, b) => {
+                if (a.transform.location.y < b.transform.location.y) {
+                    return -1;
+                }
+                if (a.transform.location.y > b.transform.location.y) {
+                    return 1;
+                }
+                if (a.transform.location.x < b.transform.location.x) {
+                    return -1;
+                }
+                if (a.transform.location.x > b.transform.location.x) {
+                    return 1;
+                }
+                return 0;
+            })];
+
             this.addItems();
         });
 
