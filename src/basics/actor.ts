@@ -12,10 +12,11 @@ import { Subject } from "rxjs";
  */
 export abstract class Actor extends GameObject {
     public sprite!: Phaser.GameObjects.Sprite;
-    protected rendered: boolean = false;
 
     private renderedSubject: Subject<Actor> = new Subject<Actor>();
     public rendered$ = this.renderedSubject.asObservable();
+
+    protected rendered: boolean = false;
 
     get size() {
         return {

@@ -29,6 +29,10 @@ export class Vector2 {
         return new Vector2(this._x * scalar, this._y * scalar);
     }
 
+    public multiplyByVector(vector: Vector2): Vector2 {
+        return new Vector2(this._x * vector.x, this._y * vector.y);
+    }
+
     public divide(scalar: number): Vector2 {
         return new Vector2(this._x / scalar, this._y / scalar);
     }
