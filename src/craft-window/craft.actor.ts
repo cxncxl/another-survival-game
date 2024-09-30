@@ -116,7 +116,7 @@ export class CraftWindow extends Actor {
             for (let i = 0; i < this.cells.length; i++) {
                 const item = items[i];
 
-                this.cells[i].setItem(item);
+                if (item) this.cells[i].setItem(item);
             }
         });
     }
