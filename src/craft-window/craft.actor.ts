@@ -1,4 +1,4 @@
-import { from } from "rxjs";
+import { concatMap, from, Observable, Subject } from "rxjs";
 import { Actor } from "../basics/actor";
 import { CONFIG } from "../config";
 import { Vector2 } from "../math/vector2";
@@ -25,10 +25,6 @@ export class CraftWindow extends Actor {
         super('gamebuild/assets/ui/craft-window.png');
         
         this.service = new CraftService();
-
-        // this.service.getItemDetails(1).subscribe(async (response) => {
-        //     console.log('item #1', response);
-        // });
     }
 
     public onRendered(): void {
@@ -55,37 +51,47 @@ export class CraftWindow extends Actor {
     private addCells(): void {
         const gridWidth = 7;
         const gridHeight = 14;
+        
+        const cellsLoadingQueue = new Subject<Observable<any>>(); 
 
-        from(new Promise<void>((resolve) => {
-            for (let w = 0; w < gridWidth; w++) {
-                for (let h = 0; h < gridHeight; h++) {
-                    const cell = new InventoryCell();
-    
-                    cell.rendered$.subscribe(() => {
-                        cell.setScale(new Vector2(1.25, 1.25));
-    
-                        const cellWidth = cell.size.scaled.px.width;
-                        const cellHeight = cell.size.scaled.px.height;
-    
-                        cell.setAnchor(0, 0);
-    
-                        const cellLocation = new Vector2(
-                            this.transform.location.x + (this.BORDERS.left * this.scaleFactor.x) + (this.PADDING * this.scaleFactor.x) + (w * cellWidth) + 48,
-                            this.transform.location.y + (this.BORDERS.top * this.scaleFactor.y) + (this.PADDING * this.scaleFactor.y) + (h * cellHeight) + 42
-                        );
-    
-                        cell.setLocation(cellLocation);
-    
-                        this.cells.push(cell);
+        for (let w = 0; w < gridWidth; w++) {
+            for (let h = 0; h < gridHeight; h++) {
+                cellsLoadingQueue.next(
+                    from(
+                        new Promise<void>((resolve) => {
+                            const cell = new InventoryCell();
+        
+                            cell.rendered$.subscribe(() => {
+                                cell.setScale(new Vector2(1.25, 1.25));
+            
+                                const cellWidth = cell.size.scaled.px.width;
+                                const cellHeight = cell.size.scaled.px.height;
+            
+                                cell.setAnchor(0, 0);
+            
+                                const cellLocation = new Vector2(
+                                    this.transform.location.x + (this.BORDERS.left * this.scaleFactor.x) + (this.PADDING * this.scaleFactor.x) + (w * cellWidth) + 48,
+                                    this.transform.location.y + (this.BORDERS.top * this.scaleFactor.y) + (this.PADDING * this.scaleFactor.y) + (h * cellHeight) + 42
+                                );
+            
+                                cell.setLocation(cellLocation);
+            
+                                this.cells.push(cell);
 
-                        if (this.cells.length === gridWidth * gridHeight) {
-                            resolve();
-                        }
-                    });
-                }
+                                if (this.cells.length === gridWidth * gridHeight) {
+                                    resolve();
+                                }
+                            });
+                        })
+                    )
+                )
             }
-        })).subscribe(() => {
-            // sort cells by location (1st is top left, last is bottom right)
+        }
+        cellsLoadingQueue
+        // .pipe(
+        //     concatMap((operation$) => operation$)
+        // )
+        .subscribe(() => {
             this.cells = [...this.cells.sort((a, b) => {
                 if (a.transform.location.y < b.transform.location.y) {
                     return -1;
@@ -108,11 +114,7 @@ export class CraftWindow extends Actor {
     }
 
     private addItems(): void {
-        console.log('addItems');
-
         this.service.getAllItems().subscribe(async (items) => {
-            console.log('items', items);
-
             for (let i = 0; i < this.cells.length; i++) {
                 const item = items[i];
 

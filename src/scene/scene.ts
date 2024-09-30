@@ -20,13 +20,13 @@ export class Scene extends PhaserScene {
     }
 
     loadImage(url: string): Observable<string> {
-        if (this.loadedImages[url]) {
-            return of(this.loadedImages[url])
-                    .pipe(delay(50)); // hack. delay to make sure the image is loaded. TODO: find a better way
-        }
-
         return from(
             new Promise<string>((resolve) => {
+                if (this.loadedImages[url]) {
+                    return resolve(this.loadedImages[url]);
+                            // .pipe(delay(50)); // hack. delay to make sure the image is loaded. TODO: find a better way
+                }
+
                 const uniqueLabel = `image-${Object.keys(this.loadedImages).length}`;
                 const load = new Phaser.Loader.LoaderPlugin(this);
 
