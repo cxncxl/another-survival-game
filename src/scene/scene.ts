@@ -1,5 +1,5 @@
 import { Scene as PhaserScene } from "phaser";
-import { delay, from, Observable, of, Subject } from "rxjs";
+import { Observable, of, shareReplay, Subject } from "rxjs";
 import * as Phaser from "phaser";
 
 /**
@@ -10,8 +10,12 @@ export class Scene extends PhaserScene {
 
     // url => label
     private loadedImages: Record<string, string> = {};
+    private ongoingRequests: Record<string, Observable<string>> = {};
+    protected loader!: Phaser.Loader.LoaderPlugin;
 
-    preload() {}
+    preload() {
+        this.loader = new Phaser.Loader.LoaderPlugin(this);
+    }
 
     create() {
         this.cameras.add(0, 0, 800, 600); // TODO: move to config
@@ -20,26 +24,31 @@ export class Scene extends PhaserScene {
     }
 
     loadImage(url: string): Observable<string> {
-        return from(
-            new Promise<string>((resolve) => {
-                if (this.loadedImages[url]) {
-                    return resolve(this.loadedImages[url]);
-                            // .pipe(delay(50)); // hack. delay to make sure the image is loaded. TODO: find a better way
-                }
-
-                const uniqueLabel = `image-${Object.keys(this.loadedImages).length}`;
-                const load = new Phaser.Loader.LoaderPlugin(this);
-
-                load.image(uniqueLabel, url);
-                load.once(Phaser.Loader.Events.COMPLETE, () => {
-                    resolve(uniqueLabel)
-                });
-                load.start();
-
+        if (this.loadedImages[url]) {
+            return of(this.loadedImages[url]);
+        }
+    
+        if (this.ongoingRequests[url]) {
+            return this.ongoingRequests[url];
+        }
+    
+        const loadImage$ = new Observable<string>((observer) => {
+            const uniqueLabel = url;
+    
+            this.loader.image(uniqueLabel, url);
+            this.loader.once(`filecomplete-image-${uniqueLabel}`, () => {
                 this.loadedImages[url] = uniqueLabel;
-
-                return uniqueLabel;
-            })
-        );
+    
+                observer.next(uniqueLabel);
+                observer.complete();
+    
+                delete this.ongoingRequests[url];
+            });
+            this.loader.start();
+        }).pipe(shareReplay(1));
+    
+        this.ongoingRequests[url] = loadImage$;
+    
+        return loadImage$;
     }
 }

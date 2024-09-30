@@ -1,4 +1,4 @@
-import { concatMap, from, Observable, Subject } from "rxjs";
+import { concatMap, Observable, of } from "rxjs";
 import { Actor } from "../basics/actor";
 import { CONFIG } from "../config";
 import { Vector2 } from "../math/vector2";
@@ -52,70 +52,52 @@ export class CraftWindow extends Actor {
         const gridWidth = 7;
         const gridHeight = 14;
         
-        const cellsLoadingQueue = new Subject<Observable<any>>(); 
-
-        for (let w = 0; w < gridWidth; w++) {
+        new Observable<InventoryCell>((observer) => {
             for (let h = 0; h < gridHeight; h++) {
-                cellsLoadingQueue.next(
-                    from(
-                        new Promise<void>((resolve) => {
-                            const cell = new InventoryCell();
-        
-                            cell.rendered$.subscribe(() => {
-                                cell.setScale(new Vector2(1.25, 1.25));
+                for (let w = 0; w < gridWidth; w++) {
+                    const cell = new InventoryCell();
             
-                                const cellWidth = cell.size.scaled.px.width;
-                                const cellHeight = cell.size.scaled.px.height;
-            
-                                cell.setAnchor(0, 0);
-            
-                                const cellLocation = new Vector2(
-                                    this.transform.location.x + (this.BORDERS.left * this.scaleFactor.x) + (this.PADDING * this.scaleFactor.x) + (w * cellWidth) + 48,
-                                    this.transform.location.y + (this.BORDERS.top * this.scaleFactor.y) + (this.PADDING * this.scaleFactor.y) + (h * cellHeight) + 42
-                                );
-            
-                                cell.setLocation(cellLocation);
-            
-                                this.cells.push(cell);
+                    cell.rendered$.subscribe(() => {
+                        cell.setScale(new Vector2(1.25, 1.25));
 
-                                if (this.cells.length === gridWidth * gridHeight) {
-                                    resolve();
-                                }
-                            });
-                        })
-                    )
-                )
+                        const cellWidth = cell.size.scaled.px.width;
+                        const cellHeight = cell.size.scaled.px.height;
+
+                        cell.setAnchor(0, 0);
+
+                        const cellLocation = new Vector2(
+                            this.transform.location.x + (this.BORDERS.left * this.scaleFactor.x) + (this.PADDING * this.scaleFactor.x) + (w * cellWidth) + 48,
+                            this.transform.location.y + (this.BORDERS.top * this.scaleFactor.y) + (this.PADDING * this.scaleFactor.y) + (h * cellHeight) + 42
+                        );
+
+                        cell.setLocation(cellLocation);
+
+                        observer.next(cell);
+
+                        if (this.cells.length === gridWidth * gridHeight) {
+                            observer.complete();
+                        }
+                    });
+                }
             }
-        }
-        cellsLoadingQueue
-        // .pipe(
-        //     concatMap((operation$) => operation$)
-        // )
-        .subscribe(() => {
-            this.cells = [...this.cells.sort((a, b) => {
-                if (a.transform.location.y < b.transform.location.y) {
-                    return -1;
-                }
-                if (a.transform.location.y > b.transform.location.y) {
-                    return 1;
-                }
-                if (a.transform.location.x < b.transform.location.x) {
-                    return -1;
-                }
-                if (a.transform.location.x > b.transform.location.x) {
-                    return 1;
-                }
-                return 0;
-            })];
-
-            this.addItems();
+        })
+        .pipe(
+            concatMap((cell) => of(cell)),
+        )
+        .subscribe({
+            next: (cell) => {
+                this.cells.push(cell);
+            },
+            complete: () => {
+                this.addItems();
+            }
         });
 
     }
 
     private addItems(): void {
-        this.service.getAllItems().subscribe(async (items) => {
-            for (let i = 0; i < this.cells.length; i++) {
+        this.service.getAllItems().subscribe((items) => {
+            for (let i = 0; i < items.length; i++) {
                 const item = items[i];
 
                 if (item) this.cells[i].setItem(item);
