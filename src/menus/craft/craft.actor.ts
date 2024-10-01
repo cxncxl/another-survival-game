@@ -5,9 +5,11 @@ import { Vector2 } from "../../math/vector2";
 import { InventoryCell } from "../shared/cell/cell.actor";
 import { CraftService } from "./craft.service";
 import { Inventory } from "../inventory/inventory.actor";
+import { CraftTable } from "./craft-table/craft-table.actor";
 
 export class CraftWindow extends Actor {
     private service: CraftService;
+    private lineColorCode = 0x594c29;
 
     private readonly BORDERS = {
         top: 2,
@@ -19,9 +21,11 @@ export class CraftWindow extends Actor {
     private readonly PADDING = 1;
     
     private inventory: InventoryCell[] = [];
-
-    scaleFactor = new Vector2(1, 1);
     private inventoryActor?: Inventory;
+
+    private craftTableActor?: CraftTable;
+
+    private scaleFactor = new Vector2(1, 1);
 
     constructor() {
         super('gamebuild/assets/ui/craft-window.png');
@@ -48,6 +52,7 @@ export class CraftWindow extends Actor {
         );
 
         this.addInventory();
+        this.addCraftTable();
     }
 
     private addInventory(): void {
@@ -66,10 +71,10 @@ export class CraftWindow extends Actor {
                 )
             ));
 
-            const lineColor = 0x594c29;
+            const lineColor = this.lineColorCode;
             const x = this.transform.location.x + (this.size.scaled.px.width * 0.25);
             const line = this.world.scene.add.line(
-                50,
+                100,
                 320,
                 x,
                 this.transform.location.y + this.size.scaled.px.height - 155,
@@ -79,8 +84,37 @@ export class CraftWindow extends Actor {
             );
         });
     }
-
     
+    private addCraftTable(): void {
+        this.craftTableActor = new CraftTable();
+
+        this.craftTableActor.setParent(this);
+        this.craftTableActor.rendered$.subscribe(() => {
+            if (!this.craftTableActor) return;
+
+            this.craftTableActor.setScale(this.scaleFactor);
+            this.craftTableActor.setAnchor(0.5, 0);
+            this.craftTableActor.setLocation(this.transform.location.add(
+                new Vector2(
+                    (this.size.scaled.px.width / 3) + (this.craftTableActor.size.scaled.px.width / 2) + 10,
+                    (this.BORDERS.top * this.scaleFactor.y) + (this.PADDING * this.scaleFactor.y) + 50
+                )
+            ));
+            this.craftTableActor.setParent(this);
+
+            const lineColor = this.lineColorCode;
+            const x = this.transform.location.x + (this.size.scaled.px.width * 0.25);
+            const line = this.world.scene.add.line(
+                325 + this.craftTableActor.size.scaled.px.width,
+                320,
+                x,
+                this.transform.location.y + this.size.scaled.px.height - 155,
+                x,
+                this.transform.location.y,
+                lineColor
+            );
+        });
+    }
 
     public onReady(): void {}
 

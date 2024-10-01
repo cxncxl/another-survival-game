@@ -8,3 +8,14 @@ body {
     align-items: center;
     height: 100vh;
 }
+
+#craft-text-area {
+    width: 200px;
+    height: 250px;
+    resize: none;
+}
+
+#craft-button {
+    width: 200px;
+    height: 30px;
+}

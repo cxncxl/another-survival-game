@@ -8,7 +8,7 @@
     "prebuild": "rm -rf dist",  
     "build": "npx webpack",
     "build:prod": "npx webpack --mode production",
-    "postbuild": "cp src/index.html dist/index.html && cp src/styles.css dist/styles.css && cp -r assets dist/assets"
+    "postbuild": "cp src/index.html dist/index.html && cp src/styles.css dist/styles.css && mkdir dist/gamebuild && cp -r assets dist/gamebuild"
   },
   "repository": {
     "type": "git",

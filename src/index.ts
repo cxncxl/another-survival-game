@@ -11,6 +11,9 @@ const gameConfig = {
     scene: scene,
     parent: "game-container",
     pixelArt: true,
+    dom: {
+        createContainer: true
+    },
 }
 
 const game = new Phaser.Game(gameConfig);
