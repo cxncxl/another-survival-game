@@ -95,6 +95,18 @@ export abstract class Actor extends GameObject {
         this.sprite.setOrigin(x, y);
     }
 
+    public setVisible(visible: boolean): void {
+        this.sprite.setVisible(visible);
+    }
+
+    public hide(): void {
+        this.setVisible(false);
+    }
+
+    public show(): void {
+        this.setVisible(true);
+    }
+
     private get inViewport(): boolean {
         const cameraPosition = new Vector2(this.world.camera.x, this.world.camera.y);
         const actorPosition = this.transform.location;

@@ -1,7 +1,7 @@
 import { map, of } from "rxjs";
-import { Service } from "../basics/service/service";
-import { environment } from "../env/environment";
-import { Item, CraftInput } from "./model/craft.model";
+import { Service } from "../../basics/service/service";
+import { environment } from "../../env/environment";
+import { Item, CraftInput } from "../shared/model/craft.model";
 
 export class CraftService extends Service {
     getAllItems() {
@@ -14,10 +14,6 @@ export class CraftService extends Service {
                 }))
             )
         )
-    }
-
-    getItemDetails(itemId: number) {
-        return this.fetch(`${environment.API_URL}/items/${itemId}/details`);
     }
 
     craft(input: CraftInput) {

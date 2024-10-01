@@ -1,6 +1,6 @@
 import { Scene } from "../scene/scene";
 // import { Camera } from "../camera/camera";
-import { CraftWindow } from "../craft-window/craft.actor";
+import { CraftWindow } from "../menus/craft/craft.actor";
 import { Actor } from "../basics/actor";
 
 /**
