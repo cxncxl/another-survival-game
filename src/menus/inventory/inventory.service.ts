@@ -1,4 +1,4 @@
-import { map } from "rxjs";
+import { map, of } from "rxjs";
 import { Service } from "../../basics/service/service";
 import { Item } from "../shared/model/craft.model";
 import { environment } from "../../env/environment";
@@ -10,7 +10,8 @@ export class InventoryService extends Service {
             map((items) => 
                 items.map((item) => ({ 
                     ...item, 
-                    image: `${environment.ASSETS_URL}${item.image.replace('\\', '/').replace('C:/xampp/htdocs/Game_Item', '')}` 
+                    image: `${environment.ASSETS_URL}${item.image.replace('\\', '/').replace('C:/xampp/htdocs/Game_Item', '')}`,
+                    quantity: Math.floor(Math.random() * 10) + 1 
                 }))
             )
         )

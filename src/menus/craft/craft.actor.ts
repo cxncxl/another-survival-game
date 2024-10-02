@@ -20,7 +20,6 @@ export class CraftWindow extends Actor {
 
     private readonly PADDING = 1;
     
-    private inventory: InventoryCell[] = [];
     private inventoryActor?: Inventory;
 
     private craftTableActor?: CraftTable;

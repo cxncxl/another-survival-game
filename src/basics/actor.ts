@@ -3,7 +3,7 @@ import { Camera } from "../camera/camera";
 
 import * as Phaser from "phaser";
 import { Vector2 } from "../math/vector2";
-import { Subject } from "rxjs";
+import { ReplaySubject } from "rxjs";
 
 /**
  * Actor
@@ -13,7 +13,7 @@ import { Subject } from "rxjs";
 export abstract class Actor extends GameObject {
     public sprite!: Phaser.GameObjects.Sprite;
 
-    private renderedSubject: Subject<Actor> = new Subject<Actor>();
+    private renderedSubject: ReplaySubject<Actor> = new ReplaySubject<Actor>();
     public rendered$ = this.renderedSubject.asObservable();
 
     protected rendered: boolean = false;
@@ -100,11 +100,20 @@ export abstract class Actor extends GameObject {
     }
 
     public hide(): void {
+        this.children.forEach((child) => {
+            (child as Actor).hide();
+        });
         this.setVisible(false);
     }
 
     public show(): void {
         this.setVisible(true);
+    }
+
+    override destroy() {
+        this.sprite.destroy();
+        
+        super.destroy();
     }
 
     private get inViewport(): boolean {

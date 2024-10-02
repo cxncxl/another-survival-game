@@ -1,3 +1,4 @@
+import { Subscription } from "rxjs";
 import { Actor } from "../../../basics/actor";
 import { ItemDetailsService } from "./item-details.service";
 
@@ -19,6 +20,8 @@ export class InventoryItemDetails extends Actor {
         loading: undefined
     };
 
+    private getItemDetailsSubscription?: Subscription;
+
     constructor() {
         super('gamebuild/assets/ui/inventory-item-details.png');
 
@@ -38,7 +41,7 @@ export class InventoryItemDetails extends Actor {
         );
         this.details.loading.setOrigin(0.5, 0);
 
-        this.service.getItemDetails(itemId).subscribe((details) => {
+        this.getItemDetailsSubscription = this.service.getItemDetails(itemId).subscribe((details) => {
             if (this.details.loading) this.details.loading.destroy();
 
             this.details.label = this.world.scene.add.text(
@@ -97,6 +100,8 @@ export class InventoryItemDetails extends Actor {
                 this.details[k] = undefined;
             }
         });
+
+        if (this.getItemDetailsSubscription) this.getItemDetailsSubscription.unsubscribe();
     }
         
 

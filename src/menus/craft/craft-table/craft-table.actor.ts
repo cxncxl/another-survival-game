@@ -2,6 +2,8 @@ import { Observable } from "rxjs";
 import { Actor } from "../../../basics/actor";
 import { Vector2 } from "../../../math/vector2";
 import { InventoryCell } from "../../shared/cell/cell.actor";
+import { CraftService } from "../craft.service";
+import { Item } from "../../shared/model/craft.model";
 
 export class CraftTable extends Actor {
     private headerLabel?: Phaser.GameObjects.Text;
@@ -9,7 +11,11 @@ export class CraftTable extends Actor {
     private textArea?: Phaser.GameObjects.DOMElement;
     private craftButton?: Phaser.GameObjects.DOMElement;
 
+    private craftPrompt: string = '';
+
     private cells: InventoryCell[] = [];
+
+    private service: CraftService;
 
     constructor() {
         super("gamebuild/assets/ui/craft-table.png");
@@ -17,6 +23,8 @@ export class CraftTable extends Actor {
         this.rendered$.subscribe(() => {
             this.addCells();
         });
+
+        this.service = new CraftService();
     }
 
     private addCells(): void {
@@ -120,6 +128,28 @@ export class CraftTable extends Actor {
             domButton
         );
         this.craftButton.setOrigin(0.5, 0);
+
+        this.craftButton.addListener('click');
+        this.craftButton.on('click', () => {
+            if (!this.craftButton) return;
+            if (!this.textArea) return;
+
+            this.craftPrompt = (document.getElementById('craft-text-area') as HTMLTextAreaElement).value || '';
+
+            if (!this.craftPrompt) return;
+
+            const items = this.cells.filter((cell) => cell.item).map((cell) => cell.item?.itemData);
+
+            if (!items) return;
+            if (items.length === 0) return;
+
+            this.service.craft({
+                items: items as Item[],
+                description: this.craftPrompt
+            }).subscribe((item) => {
+                console.log('Crafted item:', item);
+            });
+        });
     }
 
     public onRendered(): void {}

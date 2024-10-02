@@ -1,5 +1,5 @@
 export type CraftInput = {
-    items: { id: number, amount: number }[];
+    items: Item[];
     description: string;
 }
 
@@ -7,6 +7,7 @@ export type Item = {
     image: string;
     name: string;
     id: number;
+    quantity: number;
 }
 
 export type ItemDetails = {

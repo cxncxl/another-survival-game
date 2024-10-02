@@ -15,6 +15,8 @@ export abstract class GameObject extends Phaser.GameObjects.GameObject {
 
     public parent?: GameObject;
 
+    protected children: GameObject[] = [];
+
     private _transform: Transform = {
         location: Vector2.infinity(), // default to infinity so it is not rendered
         rotation: 0,
@@ -72,13 +74,18 @@ export abstract class GameObject extends Phaser.GameObjects.GameObject {
         this.transform$.next(this._transform);
     }
 
-    setParent(parent: GameObject) {
+    setParent(parent: GameObject, copyLocation: boolean = false): void {
         this.parent = parent;
         this.parentOffset = {
             location: this.transform.location.subtract(parent.transform.location),
             rotation: this.transform.rotation - parent.transform.rotation,
             scale: this.transform.scale.divideByVector(parent.transform.scale)
         };
+
+        if (copyLocation) {
+            this.setLocation(parent.transform.location);
+            this.parentOffset.location = Vector2.zero();
+        }
 
         this.parentTransformSubscription = this.parent.transform$.subscribe((transform) => {
             if (!this.parentOffset) return;
@@ -89,6 +96,8 @@ export abstract class GameObject extends Phaser.GameObjects.GameObject {
 
             this.transform$.next(this.transform);
         });
+
+        this.parent.onChildAdded(this);
     }
 
     removeParent() {
@@ -98,8 +107,15 @@ export abstract class GameObject extends Phaser.GameObjects.GameObject {
         this.parentTransformSubscription = undefined;
     }
 
+    protected onChildAdded(child: GameObject) {
+        this.children.push(child);
+    }
+
     public destroy(): void {
-        // Remove from game
+        this.children.forEach(child => child.destroy());
+        this.children = [];
+
+        this.removeParent();
     }
 
     update() {
