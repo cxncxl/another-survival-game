@@ -6,6 +6,7 @@ import { InventoryCell } from "../shared/cell/cell.actor";
 import { CraftService } from "./craft.service";
 import { Inventory } from "../inventory/inventory.actor";
 import { CraftTable } from "./craft-table/craft-table.actor";
+import { CraftResults } from "./craft-results/craft-results.actor";
 
 export class CraftWindow extends Actor {
     private service: CraftService;
@@ -21,8 +22,8 @@ export class CraftWindow extends Actor {
     private readonly PADDING = 1;
     
     private inventoryActor?: Inventory;
-
     private craftTableActor?: CraftTable;
+    private resultsActor?: CraftResults;
 
     private scaleFactor = new Vector2(1, 1);
 
@@ -52,6 +53,7 @@ export class CraftWindow extends Actor {
 
         this.addInventory();
         this.addCraftTable();
+        this.addResultsWindow();
     }
 
     private addInventory(): void {
@@ -112,6 +114,39 @@ export class CraftWindow extends Actor {
                 this.transform.location.y,
                 lineColor
             );
+        });
+
+        this.craftTableActor.crafted$.subscribe((craftedItem) => {
+            if (!this.resultsActor) return;
+
+            console.log('Crafted item:', craftedItem);
+            this.resultsActor.setCrafted(craftedItem);
+        });
+
+        this.craftTableActor.craftInProgress$.subscribe(() => {
+            if (!this.resultsActor) return;
+
+            this.resultsActor.clear();
+            this.resultsActor.setInProgress();
+        });
+    }
+
+    private addResultsWindow() {
+        this.resultsActor = new CraftResults();
+
+        this.resultsActor.setParent(this);
+        this.resultsActor.rendered$.subscribe(() => {
+            if (!this.resultsActor) return;
+
+            this.resultsActor.setScale(this.scaleFactor);
+            this.resultsActor.setAnchor(0.5, 0);
+            this.resultsActor.setLocation(this.transform.location.add(
+                new Vector2(
+                    ((this.size.scaled.px.width / 3) * 2) - 25,
+                    (this.BORDERS.top * this.scaleFactor.y) + (this.PADDING * this.scaleFactor.y) + 40
+                )
+            ));
+            this.resultsActor.setParent(this);
         });
     }
 

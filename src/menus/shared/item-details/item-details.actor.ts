@@ -71,7 +71,7 @@ export class InventoryItemDetails extends Actor {
             this.details.quality = this.world.scene.add.text(
                 this.transform.location.x - (this.size.scaled.px.width / 2) + 5,
                 this.transform.location.y + (this.size.scaled.px.height * 0.35),
-                `Якість: ${parseFloat(details.quality.value) * 100} %`,
+                `Якість: ${(parseFloat(details.quality.value) * 100).toFixed(0)} %`,
                 {
                     fontSize: '10px',
                     color: '#ccc'

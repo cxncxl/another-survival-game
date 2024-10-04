@@ -1,9 +1,9 @@
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { Actor } from "../../../basics/actor";
 import { Vector2 } from "../../../math/vector2";
 import { InventoryCell } from "../../shared/cell/cell.actor";
 import { CraftService } from "../craft.service";
-import { Item } from "../../shared/model/craft.model";
+import { CraftResult, Item } from "../../shared/model/craft.model";
 
 export class CraftTable extends Actor {
     private headerLabel?: Phaser.GameObjects.Text;
@@ -16,6 +16,8 @@ export class CraftTable extends Actor {
     private cells: InventoryCell[] = [];
 
     private service: CraftService;
+    crafted$: Subject<CraftResult> = new Subject<CraftResult>();
+    craftInProgress$: Subject<void> = new Subject<void>();
 
     constructor() {
         super("gamebuild/assets/ui/craft-table.png");
@@ -143,11 +145,12 @@ export class CraftTable extends Actor {
             if (!items) return;
             if (items.length === 0) return;
 
+            this.craftInProgress$.next();
             this.service.craft({
                 items: items as Item[],
                 description: this.craftPrompt
             }).subscribe((item) => {
-                console.log('Crafted item:', item);
+                this.crafted$.next(item);
             });
         });
     }

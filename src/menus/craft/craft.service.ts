@@ -1,7 +1,7 @@
 import { map, of } from "rxjs";
 import { Service } from "../../basics/service/service";
 import { environment } from "../../env/environment";
-import { Item, CraftInput } from "../shared/model/craft.model";
+import { Item, CraftInput, CraftResult } from "../shared/model/craft.model";
 
 export class CraftService extends Service {
     getAllItems() {
@@ -25,7 +25,7 @@ export class CraftService extends Service {
             throw new Error('No description specified');
         }
 
-        return this.fetch(`${environment.API_URL}/craft_item`, {
+        return this.fetch<CraftResult>(`${environment.API_URL}/craft_item`, {
             method: 'POST',
             body: JSON.stringify(input),
             headers: {

@@ -8,6 +8,31 @@ export class TextActor extends Actor {
 
     public uiRendered$ = new ReplaySubject<void>();
 
+    override get size() {
+        return {
+            source: {
+                px: {
+                    width: this.text.width,
+                    height: this.text.height
+                },
+                percentage: {
+                    width: this.text.width / this.world.scene.game.canvas.width,
+                    height: this.text.height / this.world.scene.game.canvas.height
+                }
+            },
+            scaled: {
+                px: {
+                    width: this.text.width,
+                    height: this.text.height
+                },
+                percentage: {
+                    width: this.text.width / this.world.scene.game.canvas.width,
+                    height: this.text.height / this.world.scene.game.canvas.height
+                }
+            }
+        }
+    }
+
     constructor(
         text: string,
         location: Vector2
@@ -71,6 +96,18 @@ export class TextActor extends Actor {
         this.rendered$.subscribe(() => {
             this.text.setBackgroundColor(color);
         });
+    }
+
+    public setAlign(align: string): void {
+        this.rendered$.subscribe(() => {
+            this.text.setAlign(align);
+        });
+    }
+
+    override setLocation(location: Vector2): void {
+        super.setLocation(location);
+
+        this.text.setPosition(location.x, location.y);
     }
 
     public destroy(): void {

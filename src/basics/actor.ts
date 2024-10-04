@@ -116,6 +116,25 @@ export abstract class Actor extends GameObject {
         super.destroy();
     }
 
+    override setLocation(location: Vector2): void {
+        super.setLocation(location);
+
+        this.sprite.setPosition(location.x, location.y);
+    }
+
+    public DEBUG = {
+        drawBoundingBox: () => {
+            this.world.scene.add.rectangle(
+                this.transform.location.x + this.size.scaled.px.width / 2,
+                this.transform.location.y + this.size.scaled.px.height / 2,
+                this.size.scaled.px.width,
+                this.size.scaled.px.height,
+                Math.random() * 0xffffff,
+                0.5
+            );
+        }
+    }
+
     private get inViewport(): boolean {
         const cameraPosition = new Vector2(this.world.camera.x, this.world.camera.y);
         const actorPosition = this.transform.location;

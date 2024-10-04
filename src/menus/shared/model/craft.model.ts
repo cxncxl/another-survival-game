@@ -23,6 +23,22 @@ export type ItemDetails = {
     image_url:           string;
 }
 
+export type CraftResult = {
+    message:      string;
+    crafted_item: CraftedItem;
+}
+
+export type CraftedItem = {
+    name:                string;
+    description:         string;
+    physical_properties: PhysicalProperties;
+    food_properties:     FoodProperties;
+    durability:          Durability;
+    quality:             Quality;
+    craftable:           Craftable;
+    image_path:          string;
+}
+
 export type Craftable = {
     value:       number;
     craft_items: any[];
